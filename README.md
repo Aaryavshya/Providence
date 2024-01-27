@@ -1,0 +1,2 @@
+# Thykkinger
+Wisdom handling.
