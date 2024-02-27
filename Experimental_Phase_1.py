@@ -64,6 +64,10 @@ solar_mass = pygame.image.load('functions/solarmass.png')
 solar_mass = pygame.transform.scale_by(solar_mass,.125)
 solar_mass_rect = solar_mass.get_rect(center = (50,50))
 
+solar_mass_0 = pygame.image.load('functions/solarmass.png')
+solar_mass_0 = pygame.transform.scale_by(solar_mass_0,.125)
+solar_mass_rect_0 = solar_mass.get_rect(center = (50,850))
+
 button_sun_mass_in = pygame.image.load('functions/increment.png')
 button_sun_mass_in = pygame.transform.scale_by(button_sun_mass_in,.125)
 button_sun_mass_rect_in = button_sun_mass_in.get_rect(center = (50,90))
@@ -293,10 +297,6 @@ def main():
     # Press counter
     press_counter = 0
 
-    # Event loop
-    starttime = time.time()
-    lasttime = starttime
-
     while run:
 
         clock.tick(60)
@@ -387,6 +387,10 @@ def main():
             if press_counter >= 1:
                 press_counter += 1
                 Vulkan.y_vel = Vulkan.y_vel - Vulkan.y_vel*.1
+        
+        if solar_mass_rect_0.collidepoint(mouse_pos) and event.type == pygame.MOUSEBUTTONDOWN:
+            sun.mass = .000001
+            sun.radius = 0
 
         # Primary Panel Control
         if game_active:
@@ -460,6 +464,7 @@ def main():
             WIN.blit(mrs,mrs_rect)
             WIN.blit(vul,vul_rect)
             WIN.blit(solar_mass,solar_mass_rect)
+            WIN.blit(solar_mass_0,solar_mass_rect_0)
 
             # Instructions Display
             WIN.blit(invel,invel_rect)
