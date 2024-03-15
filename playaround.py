@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 colors_in_img = set()
 
-image = cv.imread(r'C:/Users/aravs/OneDrive/Desktop/grid2.jpg')
+image = cv.imread(r'C:/Users/aravs/OneDrive/Desktop/10x10grid.png')
 
 grey_image = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
 
@@ -73,6 +73,8 @@ saturated_s = np.clip(saturated_s, 0, 255).astype(np.uint8)  # Ensure values are
 # Merge channels back and convert to BGR
 saturated_image_hsv = cv.merge([h, saturated_s, v])
 saturated_image_bgr = cv.cvtColor(saturated_image_hsv, cv.COLOR_HSV2BGR)
+cv.imshow("saturated", saturated_image_bgr)
+
 
 width = int(cropped_img.shape[0]/10)
 
@@ -129,7 +131,7 @@ def classify_colors(rgb_matrix, n_clusters=5):
     
     return np.rot90(labels_matrix, k=2, axes=(1, 0))
 
-color_classes = classify_colors(color[::-1], n_clusters=6)
+color_classes = classify_colors(color[::-1], n_clusters=7)
 print(color_classes)
 damage = []
 
@@ -147,12 +149,13 @@ def map_to_damage(grid, mapping_dict):
     return damage_grid
 
 mapping_dict = {
-    0: 1,  # Classifier 0 maps to damage value 10.0
-    1: 1000,  # Classifier 1 maps to damage value 20.0
+    0: 100,  # Classifier 0 maps to damage value 10.0
+    1: 4,  # Classifier 1 maps to damage value 20.0
     2: 3,  # Classifier 2 maps to damage value 30.0
-    3: 4,  # Classifier 3 maps to damage value 40.0
+    3: 2,  # Classifier 3 maps to damage value 40.0
     4: 5,  # Classifier 4 maps to damage value 50.0
-    5: 0
+    5: 100,
+    6: 0
 }
 
 
@@ -266,22 +269,22 @@ def get_path_string(path):
     for i in range(0,len(path),1):
         print(path[i])
         if path[i] == path[len(path)-1]:
-            traverse.append('h')
+            traverse.append(0)
             break
         if i+1 <= len(path):
             if (path[i][0] < path[i+1][0]) and ( path[i+1][0] - path[i-1][0] == 1 ) and ( path[i+1][1] - path[i-1][1] == 1 ):
-                traverse.append('l')
+                traverse.append(3)
                 # traverse.append('s')
                 # traverse.append('l')
             elif (path[i][1] < path[i+1][1]) and ( path[i+1][0] - path[i-1][0] == 1 ) and ( path[i+1][1] - path[i-1][1] == 1 ):
-                traverse.append('r')
+                traverse.append(2)
                 # traverse.append('s')
                 # traverse.append('r')
             elif (path[i][0] == path[i+1][0] and path[i][1] != path[i+1][1]) or (path[i][1] == path[i+1][1] and path[i][0] != path[i+1][0]):
-                traverse.append('s')
+                traverse.append(1)
 
     print(traverse)
-
+    
 def main():
     grid = np.flipud(np.array(damage).reshape(10,10))
     all_path_count = 0
@@ -292,7 +295,7 @@ def main():
         all_path_count += paths_tried
         if path:
             get_path_string(path)
-            print()
+            print(len(path))
             print("Path:", path)
             print("Final Health:", final_health)
             print("Tried health:", least_health)
