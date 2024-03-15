@@ -9,14 +9,14 @@ import matplotlib.pyplot as plt
 
 colors_in_img = set()
 
-image = cv.imread(r'C:/Users/aravs/OneDrive/Desktop/10x10grid.png')
+image = cv.imread(r'C:/Users/aravs/OneDrive/Desktop/grid.jpg')
 
 grey_image = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
 
 blur = cv.GaussianBlur(grey_image, (5,5), 0)
 
 threshold_image = cv.adaptiveThreshold(grey_image, 255, 1,1,11,2)
-
+cv.imshow("thres1", threshold_image)
 contour, _ = cv.findContours(threshold_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 max_area = 0
 c = 0
@@ -53,14 +53,16 @@ cv.circle(image, extTop, 8, (255, 0, 0), -1)
 cv.circle(image, extBot, 8, (255, 255, 0), -1)
 
 
-blur = cv.GaussianBlur(out, (5,5), 0)
-threshold_image = cv.adaptiveThreshold(blur, 255, 1, 1, 11, 2)
+# blur = cv.GaussianBlur(out, (5,5), 0)
+# threshold_image = cv.adaptiveThreshold(blur, 255, 1, 1, 11, 2)
+# cv.imshow("thres", threshold_image)
+# contours, _ = cv.findContours(threshold_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
-contours, _ = cv.findContours(threshold_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
+# cropped_img = image[extTop[1]:extBot[1], extLeft[0]:extRight[0]]
+# image = cropped_img
 
-cropped_img = image[extTop[1]:extBot[1], extLeft[0]:extRight[0]]
-image = cropped_img
+# cv.imshow("image", cropped_img)
 
 image_hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
 
@@ -76,7 +78,8 @@ saturated_image_bgr = cv.cvtColor(saturated_image_hsv, cv.COLOR_HSV2BGR)
 cv.imshow("saturated", saturated_image_bgr)
 
 
-width = int(cropped_img.shape[0]/10)
+# width = int(cropped_img.shape[0]/10)
+width = int(image.shape[0]/10)
 
 center = int(width/2)
 
@@ -284,7 +287,7 @@ def get_path_string(path):
                 traverse.append(1)
 
     print(traverse)
-    
+
 def main():
     grid = np.flipud(np.array(damage).reshape(10,10))
     all_path_count = 0
