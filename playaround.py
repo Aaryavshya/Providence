@@ -159,7 +159,6 @@ mapping_dict = {
     2: 1,  # pink 
     3: 2,  # 
     4: 3, # Classifier 4 maps to damage value 50.0
-    5: 0,
     6: 100
 }
 
@@ -292,6 +291,11 @@ def get_path_string(path):
 
 def main():
     grid = np.flipud(np.array(damage).reshape(10,10))
+    grid[4, 4] = 0
+    grid[4, 5] = 0
+    grid[5, 4] = 0
+    grid[5, 5] = 0
+
     all_path_count = 0
     start = (0, 0)
     end = (9, 9)
