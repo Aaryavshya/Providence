@@ -6,6 +6,7 @@ import math as m
 import imutils
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import normalize
 
 colors_in_img = set()
 
@@ -121,20 +122,21 @@ def classify_colors(rgb_matrix, n_clusters=5):
     colors = rgb_matrix.reshape(-1, 3)
     
     # Initialize the K-Means model with given number of clusters
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto')
     
     # Fit the model on the flattened color data
     kmeans.fit(colors)
     
     # Predict the cluster for each color in the matrix
     labels = kmeans.predict(colors)
+    print(labels)
     
     # Reshape the labels back to the 10x10 matrix to get the classification of each color in the original structure
     labels_matrix = labels.reshape(10, 10)
     
     return np.rot90(labels_matrix, k=2, axes=(1, 0))
 
-color_classes = classify_colors(color[::-1], n_clusters=7)
+color_classes = classify_colors(color[::-1], n_clusters=6)
 print(color_classes)
 damage = []
 
@@ -152,13 +154,13 @@ def map_to_damage(grid, mapping_dict):
     return damage_grid
 
 mapping_dict = {
-    0: 100,  # Classifier 0 maps to damage value 10.0
-    1: 4,  # Classifier 1 maps to damage value 20.0
-    2: 3,  # Classifier 2 maps to damage value 30.0
-    3: 2,  # Classifier 3 maps to damage value 40.0
-    4: 5,  # Classifier 4 maps to damage value 50.0
-    5: 100,
-    6: 0
+    0: 100, 
+    1: 4,  # yellow
+    2: 1,  # pink 
+    3: 2,  # 
+    4: 3, # Classifier 4 maps to damage value 50.0
+    5: 0,
+    6: 100
 }
 
 
