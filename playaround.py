@@ -17,7 +17,7 @@ grey_image = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
 blur = cv.GaussianBlur(grey_image, (5,5), 0)
 
 threshold_image = cv.adaptiveThreshold(grey_image, 255, 1,1,11,2)
-cv.imshow("thres1", threshold_image)
+# cv.imshow("thres1", threshold_image)
 contour, _ = cv.findContours(threshold_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 max_area = 0
 c = 0
@@ -76,7 +76,7 @@ saturated_s = np.clip(saturated_s, 0, 255).astype(np.uint8)  # Ensure values are
 # Merge channels back and convert to BGR
 saturated_image_hsv = cv.merge([h, saturated_s, v])
 saturated_image_bgr = cv.cvtColor(saturated_image_hsv, cv.COLOR_HSV2BGR)
-cv.imshow("saturated", saturated_image_bgr)
+# cv.imshow("saturated", saturated_image_bgr)
 
 
 # width = int(cropped_img.shape[0]/10)
@@ -156,9 +156,9 @@ def map_to_damage(grid, mapping_dict):
 mapping_dict = {
     0: 100, 
     1: 4,  # yellow
-    2: 1,  # pink 
-    3: 2,  # 
-    4: 3, # Classifier 4 maps to damage value 50.0
+    2: 3,  # pink 
+    3: 1,  # 
+    4: 2, # Classifier 4 maps to damage value 50.0
     6: 100
 }
 
@@ -280,30 +280,30 @@ def get_path_string(path):
                 traverse.append(3)
                 # traverse.append('s')
                 # traverse.append('l')
-            elif (path[i][1] < path[i+1][1]) and ( path[i+1][0] - path[i-1][0] == 1 ) and ( path[i+1][1] - path[i-1][1] == 1 ):
+            elif ((path[i][1] < path[i+1][1]) and ( path[i+1][0] - path[i-1][0] == 1 ) and ( path[i+1][1] - path[i-1][1] == 1 )) or ((path[i][1] > path[i+1][1]) and ( path[i-1][0] - path[i+1][0] == 1 ) and ( path[i-1][1] - path[i+1][1] == 1 )):
                 traverse.append(2)
                 # traverse.append('s')
                 # traverse.append('r')
             elif (path[i][0] == path[i+1][0] and path[i][1] != path[i+1][1]) or (path[i][1] == path[i+1][1] and path[i][0] != path[i+1][0]):
                 traverse.append(1)
 
-    print(traverse)
+    return traverse
 
-def main():
+def main(start, end):
     grid = np.flipud(np.array(damage).reshape(10,10))
-    grid[4, 4] = 0
-    grid[4, 5] = 0
-    grid[5, 4] = 0
-    grid[5, 5] = 0
+    # grid[4, 4] = 0
+    # grid[4, 5] = 0
+    # grid[5, 4] = 0
+    # grid[5, 5] = 0
 
     all_path_count = 0
-    start = (0, 0)
-    end = (9, 9)
+    # start = (2, 9)
+    # end = (4, 5)
     for least_health in range(100, 0, -1):
         path, final_health, paths_tried = lda_star(grid, start, end, least_health)
         all_path_count += paths_tried
         if path:
-            get_path_string(path)
+            path_string = get_path_string(path)
             print(len(path))
             print("Path:", path)
             print("Final Health:", final_health)
@@ -311,7 +311,19 @@ def main():
             print("Paths Tried:", all_path_count)
             draw_grid_with_path(grid, path, start, end)
             print("\n\n")
-            break
-main()
+            print(path_string)
+        
+            
+
+# start = [(0,0), (4, 4), (0, 2), (5, 4), (8, 1), (5, 5), (2, 9), (4, 5)]
+# end = [(4,4), (0, 2), (5, 4), (8, 1), (5, 5), (2, 9), (4, 5), (9, 5)]
+
+# path = []
+# for i in range(len(start)):
+#     print(f"start = {start}, end={end}")
+#     path.append(main(start[i], end[i]))
+
+# print(path)
+main((9, 9), (3, 4))
 
 
